@@ -79,7 +79,8 @@ public class CheckoutServlet extends HttpServlet {
                 if (prodotto != null && prodotto.isAttivo() && prodotto.getQuantitaDisponibile() >= quantitaRichiesta) {
                     ordineDAO.doSaveCompositions(idOrdineGenerato, idProdotto, quantitaRichiesta, prodotto.getPrezzo());
                     int nuovaDisponibilita = prodotto.getQuantitaDisponibile() - quantitaRichiesta;
-                    prodottoDAO.doUpdateStock(idProdotto, nuovaDisponibilita);
+                    prodotto.setQuantitaDisponibile(nuovaDisponibilita);
+                    prodottoDAO.doUpdate(prodotto);
                 } else {
                     throw new SQLException("Errore di disponibilità magazzino per il prodotto ID: " + idProdotto);
                 }
