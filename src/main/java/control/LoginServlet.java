@@ -77,6 +77,6 @@ public class LoginServlet extends HttpServlet{
             errors.add("Il campo " + fieldName + " non può essere vuoto.");
             return "";
         }
-        return value.trim(); [cite: 116]
+        return value.trim();
     }
 }
