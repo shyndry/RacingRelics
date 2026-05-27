@@ -1,0 +1,8 @@
+{
+    "java.project.sourcePaths": [
+        "src\\main\\java"
+    ],
+    "java.project.referencedLibraries": [
+        "c:\\tomcat11\\apache-tomcat-11.0.18\\lib\\servlet-api.jar"
+    ]
+}
