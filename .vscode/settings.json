@@ -4,5 +4,7 @@
     ],
     "java.project.referencedLibraries": [
         "c:\\tomcat11\\apache-tomcat-11.0.18\\lib\\servlet-api.jar"
-    ]
+    ],
+
+    "java.project.outputPath": "webapp/WEB-INF/classes"
 }
