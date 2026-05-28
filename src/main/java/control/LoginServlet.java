@@ -22,11 +22,10 @@ public class LoginServlet extends HttpServlet{
     private final UtenteDAO utenteDAO = new UtenteDAOImpl();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException{
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/login.jsp");
-                dispatcher.forward(request, response);
-            }
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+            request.getRequestDispatcher("/WEB-INF/views/common/login.jsp").forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
