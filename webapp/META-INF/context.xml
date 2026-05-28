@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context>
-    <Resource name="jdbc/RacingRelicsDB"
-              auth="Container"
+    <Resource name="jdbc/RacingRelicsDB" 
+              auth="Container" 
               type="javax.sql.DataSource"
-              maxTotal="50"
-              maxIdle="10"
-              maxWaitMillis="10000"
-              username="root"
-              password=""
-              driverClassName="com.mysql.cj.jdbc.Driver",
-              url="jdbc:mysql://localhost:3306/RacingRelics?useSSL=false&amp;serverTimezone=UTC"/>
-</Context>
+              username="root" 
+              password="" 
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/racing_relics_db"
+              maxTotal="20" 
+              maxIdle="10" 
+              maxWaitMillis="-1" /> </Context>
