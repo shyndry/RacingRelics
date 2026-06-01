@@ -55,13 +55,13 @@ public class CatalogoServlet extends HttpServlet {
 
             request.setAttribute("prodotti", prodotti);
 
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/catalogo.jsp");
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/common/catalogo.jsp");
             dispatcher.forward(request, response);
 
         } catch (SQLException e) {
             System.err.println("Errore SQL nel recupero del catalogo: " + e.getMessage());
             request.setAttribute("errorMessage", "Impossibile caricare il catalogo in questo momento. Riprova più tardi.");
-            request.getRequestDispatcher("/WEB-INF/views/catalogo.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/common/catalogo.jsp").forward(request, response);
         }
     }
 

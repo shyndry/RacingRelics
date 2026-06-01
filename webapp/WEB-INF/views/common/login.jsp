@@ -11,12 +11,14 @@
             <p>Inserisci le tue credenziali per accedere al tuo Garage o al Pannello Admin</p>
         </div>
 
-        <c:if test="${not empty requestScope.errorMessage}">
+        <c:if test="${not empty errors}">
             <div class="alert-error">
-                <p><c:out value="${requestScope.errorMessage}" /></p>
+                <c:forEach var="error" items="${errors}">
+                    <p><c:out value="${error}" /></p>
+                </c:forEach>
             </div>
         </c:if>
-
+        
         <form action="${pageContext.request.contextPath}/Login" method="POST" class="login-form">
             <div class="form-group">
                 <label for="email">Indirizzo Email</label>
