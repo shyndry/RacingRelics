@@ -17,16 +17,19 @@ public class AuthFilter extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
-    throws IOException, ServletException {
+            throws IOException, ServletException {
     
         String path = request.getServletPath();
 
-       
-        if (!path.startsWith("/admin/") && !path.startsWith("/common/")) {
+        boolean richiedeAdmin = path.startsWith("/admin/");
+        boolean richiedeRegistrato = path.equals("/Checkout") || path.equals("/Ordini");
+
+        if (!richiedeAdmin && !richiedeRegistrato) {
             chain.doFilter(request, response);
             return; 
         }
 
+       
         HttpSession session = request.getSession(false);
         Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
 
@@ -35,17 +38,16 @@ public class AuthFilter extends HttpFilter {
         if (utente != null) {
             String ruolo = utente.getRuolo(); 
             
-            if (path.startsWith("/admin/")) {
+            if (richiedeAdmin) {
                 autorizzato = "ADMIN".equals(ruolo);
-            } else if (path.startsWith("/common/")) {
+            } else if (richiedeRegistrato) {
                 autorizzato = "ADMIN".equals(ruolo) || "REGISTRATO".equals(ruolo);
             }
         }
 
         if (autorizzato) {
-            chain.doFilter(request, response);
+            chain.doFilter(request, response); 
         } else {
-            
             response.sendRedirect(request.getContextPath() + "/login.jsp");
         }
     }
