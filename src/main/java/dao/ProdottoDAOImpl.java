@@ -18,7 +18,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     static {
         try {
             InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/racing_relics_db");
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/RacingRelicsDB");
         } catch (NamingException e) {
             System.err.println("Errore nel lookup JNDI del DataSource: " + e.getMessage());
         }
