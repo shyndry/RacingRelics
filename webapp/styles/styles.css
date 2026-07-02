@@ -1,0 +1,232 @@
+   /* 
+   RESET E STILI GLOBALI
+    */
+   * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    background-color: #f5f5f7;
+    color: #1d1d1f;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+   /* 
+   NAVBAR & HEADER (Stile Circuito)
+   */
+header {
+    background-color: #111111; 
+    color: #ffffff;
+    padding: 15px 0;
+    border-bottom: 4px solid #e10600; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo a {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.logo span {
+    color: #e10600;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 25px;
+    align-items: center;
+}
+
+.nav-links a:hover {
+    color: #e10600;
+    transition: color 0.2s;
+}
+
+   /* 
+   LAYOUT PAGINE: CATALOGO E CARRELLO
+   */
+main {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+h1 {
+    font-size: 2.2rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.subtitle {
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.storico-table, .admin-table, .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+.storico-table th, .admin-table th, .cart-table th {
+    background-color: #1f1f1f;
+    color: #ffffff;
+    text-align: left;
+    padding: 15px 20px;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+}
+
+.storico-table td, .admin-table td, .cart-table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+   /* 
+   BOTTONI E BADGE UTILITY
+  */
+.btn-primary {
+    background-color: #e10600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    background-color: #b80500;
+}
+
+.td-price {
+    font-weight: bold;
+    color: #e10600;
+}
+
+
+.badge-stato {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-stato.in_elaborazione { background-color: #ffeeba; color: #856404; }
+.badge-stato.spedito { background-color: #cce5ff; color: #004085; }
+
+.badge-status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+.badge-status.status-active { background-color: #d4edda; color: #155724; }
+.badge-status.status-archived { background-color: #e2e3e5; color: #383d41; }
+
+   /* 
+   FORM BACKOFFICE ADMIN
+   */
+.admin-section {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.form-group-row .form-group {
+    flex: 1;
+    min-width: 250px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group input, .form-group textarea {
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-group input:focus {
+    border-color: #e10600;
+    outline: none;
+}
+
+.btn-table-delete {
+    background: none;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-table-delete:hover {
+    background-color: #dc3545;
+    color: white;
+}
