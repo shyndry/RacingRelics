@@ -7,16 +7,32 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import model.Ordine;
 
-public class OrdineDAOImpl implements OrdineDAO{
+public class OrdineDAOImpl implements OrdineDAO {
+    
+    private static DataSource ds;
+
+    static {
+        try {
+            InitialContext ctx = new InitialContext();
+            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/racing_relics_db");
+        } catch (NamingException e) {
+            System.err.println("Errore nel lookup JNDI del DataSource in OrdineDAO: " + e.getMessage());
+        }
+    }
+
+    // Riceve la connessione dalla Servlet per poter far parte di una transazione
     @Override
-    public int doSave(Ordine ordine) throws SQLException {
+    public int doSave(Ordine ordine, Connection con) throws SQLException {
         String query = "INSERT INTO Ordine (id_utente, id_indirizzo_consegna, stato) VALUES (?, ?, ?)";
         int idGenerato = 0;
         
-        try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        // NOTA: Non usiamo il try-with-resources sulla Connection qui, perché deve chiuderla la Servlet alla fine della transazione
+        try (PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setInt(1, ordine.getIdUtente());
             ps.setInt(2, ordine.getIdIndirizzoConsegna());
@@ -24,7 +40,6 @@ public class OrdineDAOImpl implements OrdineDAO{
             
             ps.executeUpdate();
             
-            // Catturiamo l'ID dell'ordine appena creato
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     idGenerato = rs.getInt(1);
@@ -36,12 +51,10 @@ public class OrdineDAOImpl implements OrdineDAO{
     }
 
     @Override
-    public void doSaveComposizione(int idOrdine, int idProdotto, int quantita, double prezzoAcquisto) throws SQLException {
+    public void doSaveComposizione(int idOrdine, int idProdotto, int quantita, double prezzoAcquisto, Connection con) throws SQLException {
         String query = "INSERT INTO ComposizioneOrdine (id_ordine, id_prodotto, quantita, prezzo_acquisto) VALUES (?, ?, ?, ?)";
         
-        try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-            
+        try (PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idOrdine);
             ps.setInt(2, idProdotto);
             ps.setInt(3, quantita);
@@ -56,7 +69,7 @@ public class OrdineDAOImpl implements OrdineDAO{
         String query = "SELECT * FROM Ordine WHERE id_utente = ? ORDER BY data_ordine DESC";
         List<Ordine> ordini = new ArrayList<>();
         
-        try (Connection con = ConnessioneDB.getConnection();
+        try (Connection con = ds.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             
             ps.setInt(1, idUtente);
@@ -83,7 +96,7 @@ public class OrdineDAOImpl implements OrdineDAO{
         
         List<Ordine> ordini = new ArrayList<>();
         
-        try (Connection con = ConnessioneDB.getConnection();
+        try (Connection con = ds.getConnection();
              PreparedStatement ps = con.prepareStatement(query.toString())) {
             
             int paramIndex = 1;
