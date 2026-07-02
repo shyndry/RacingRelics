@@ -116,6 +116,20 @@ public class OrdineDAOImpl implements OrdineDAO {
         return ordini;
     }
 
+    @Override
+    public double doRetrieveTotaleOrdine(int idOrdine) throws SQLException {
+    String query = "SELECT SUM(quantita * prezzo_acquisto) AS totale FROM ComposizioneOrdine WHERE id_ordine = ?";
+    try (Connection con = ds.getConnection();
+         PreparedStatement ps = con.prepareStatement(query)) {
+        ps.setInt(1, idOrdine);
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble("totale");
+            }
+        }
+    }
+    return 0.0;
+}
     private Ordine estraiOrdine(ResultSet rs) throws SQLException {
         Ordine o = new Ordine();
         o.setIdOrdine(rs.getInt("id_ordine"));
