@@ -42,6 +42,7 @@ public class AdminServlet extends HttpServlet {
             List<Ordine> ordini = ordineDAO.doRetrieveAll(null, null); 
 
             request.setAttribute("prodotti", prodotti);
+            
             request.setAttribute("ordini", ordini);
 
             request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);

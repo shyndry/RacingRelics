@@ -158,7 +158,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
     @Override
     public List<Prodotto> doRetrieveAllAdmin() throws SQLException {
-    String query = "SELECT * FROM Prodotto"; 
+    String query = "SELECT * FROM Prodotto";
     List<Prodotto> prodotti = new ArrayList<>();
     try (Connection con = ds.getConnection();
          PreparedStatement ps = con.prepareStatement(query);
@@ -168,5 +168,5 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         }
     }
     return prodotti;
-}
+    }
 }

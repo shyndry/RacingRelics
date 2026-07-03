@@ -18,4 +18,8 @@ public interface ProdottoDAO {
     List<Prodotto> doRetrieveAll() throws SQLException;
 
     List<Prodotto> doRetrieveByFiltri(String scuderia, Integer anno, String pilota) throws SQLException;
+
+    List<Prodotto> doRetrieveAllAdmin() throws SQLException;
+
+    
 }
