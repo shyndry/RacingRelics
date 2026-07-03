@@ -48,7 +48,7 @@ public class AuthFilter extends HttpFilter {
         if (autorizzato) {
             chain.doFilter(request, response); 
         } else {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            response.sendRedirect(request.getContextPath() + "/Login");
         }
     }
 }

@@ -2,30 +2,24 @@ package model;
 
 import java.io.Serializable;
 
-
 public class Prodotto implements Serializable {
     
     private static final long serialVersionUID = 1L;
-
-   
+    
     private int idProdotto;
     private String nome;
     private String descrizione;
-    private double prezzoAttuale; 
-    private int quantitaDisponibile;
-    private String immaginePath;
-    
-    
+    private double prezzo;
+    private String immagine;
     private String scuderia;
     private String pilota;
-    private int annoCampionato;
+    private int anno;
     private String granPremio;
-    private boolean attivo; 
+    private int quantitaDisponibile;
+    private boolean attivo;
 
-    
     public Prodotto() {
     }
-
 
     public int getIdProdotto() {
         return idProdotto;
@@ -51,28 +45,20 @@ public class Prodotto implements Serializable {
         this.descrizione = descrizione;
     }
 
-    public double getPrezzoAttuale() {
-        return prezzoAttuale;
+    public double getPrezzo() {
+        return prezzo;
     }
 
-    public void setPrezzoAttuale(double prezzoAttuale) {
-        this.prezzoAttuale = prezzoAttuale;
+    public void setPrezzo(double prezzo) {
+        this.prezzo = prezzo;
     }
 
-    public int getQuantitaDisponibile() {
-        return quantitaDisponibile;
+    public String getImmagine() {
+        return immagine;
     }
 
-    public void setQuantitaDisponibile(int quantitaDisponibile) {
-        this.quantitaDisponibile = quantitaDisponibile;
-    }
-
-    public String getImmaginePath() {
-        return immaginePath;
-    }
-
-    public void setImmaginePath(String immaginePath) {
-        this.immaginePath = immaginePath;
+    public void setImmagine(String immagine) {
+        this.immagine = immagine;
     }
 
     public String getScuderia() {
@@ -91,12 +77,12 @@ public class Prodotto implements Serializable {
         this.pilota = pilota;
     }
 
-    public int getAnnoCampionato() {
-        return annoCampionato;
+    public int getAnno() {
+        return anno;
     }
 
-    public void setAnnoCampionato(int annoCampionato) {
-        this.annoCampionato = annoCampionato;
+    public void setAnno(int anno) {
+        this.anno = anno;
     }
 
     public String getGranPremio() {
@@ -107,25 +93,19 @@ public class Prodotto implements Serializable {
         this.granPremio = granPremio;
     }
 
+    public int getQuantitaDisponibile() {
+        return quantitaDisponibile;
+    }
+
+    public void setQuantitaDisponibile(int quantitaDisponibile) {
+        this.quantitaDisponibile = quantitaDisponibile;
+    }
+
     public boolean isAttivo() {
         return attivo;
     }
 
     public void setAttivo(boolean attivo) {
         this.attivo = attivo;
-    }
-
-    
-    @Override
-    public String toString() {
-        return "Prodotto{" +
-                "idProdotto=" + idProdotto +
-                ", nome='" + nome + '\'' +
-                ", prezzoAttuale=" + prezzoAttuale +
-                ", quantitaDisponibile=" + quantitaDisponibile +
-                ", scuderia='" + scuderia + '\'' +
-                ", pilota='" + pilota + '\'' +
-                ", attivo=" + attivo +
-                '}';
     }
 }

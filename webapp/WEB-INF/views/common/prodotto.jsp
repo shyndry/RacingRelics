@@ -36,7 +36,6 @@
                 <p><c:out value="${prodotto.descrizione}"/></p>
             </div>
 
-            <%-- Form per l'aggiunta al carrello (gestirà la sessione in futuro) --%>
             <form action="${pageContext.request.contextPath}/Carrello" method="POST" class="add-to-cart-form">
                 <input type="hidden" name="action" value="add">
                 <input type="hidden" name="idProdotto" value="${prodotto.idProdotto}">
