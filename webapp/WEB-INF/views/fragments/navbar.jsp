@@ -12,14 +12,13 @@
                 <a href="${pageContext.request.contextPath}/Catalogo">Catalogo Reperti</a>
             </li>
 
-            <%-- RISOLTO 404: Ora punta alla Servlet e non alla JSP nascosta --%>
             <c:if test="${empty sessionScope.utenteLoggato}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Login" class="btn-nav-login">Accedi</a>
+                    <li><a href="${pageContext.request.contextPath}/Registrazione">Registrati</a></li>
                 </li>
             </c:if>
 
-            <%-- Allineato con la nostra OrdiniServlet per lo storico --%>
             <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo == 'CLIENTE'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Carrello" class="nav-cart">
