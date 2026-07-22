@@ -113,14 +113,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         const meta = [item.scuderia, item.pilota].filter(Boolean).join(' • ');
 
-                        row.innerHTML = `
-                            <img src="${imgSrc}" alt="${escapeHtml(item.nome)}" onerror="this.onerror=null; this.src='${contextPath}/images/prodotti/default.svg';">
-                            <div class="search-result-info">
-                                <div class="search-result-title">${escapeHtml(item.nome)}</div>
-                                <div class="search-result-meta">${meta ? escapeHtml(meta) : 'Reperto Storico F1'}</div>
-                            </div>
-                            <div class="search-result-price">€ ${parseFloat(item.prezzo).toFixed(2)}</div>
-                        `;
+                        var defaultImg = contextPath + '/images/prodotti/default.svg';
+                        var displayMeta = meta ? escapeHtml(meta) : 'Reperto Storico F1';
+                        var displayPrice = parseFloat(item.prezzo).toFixed(2);
+
+                        row.innerHTML = 
+                            '<img src="' + imgSrc + '" alt="' + escapeHtml(item.nome) + '" onerror="this.onerror=null; this.src=\'' + defaultImg + '\';">' +
+                            '<div class="search-result-info">' +
+                                '<div class="search-result-title">' + escapeHtml(item.nome) + '</div>' +
+                                '<div class="search-result-meta">' + displayMeta + '</div>' +
+                            '</div>' +
+                            '<div class="search-result-price">€ ' + displayPrice + '</div>';
                         resultsContainer.appendChild(row);
                     });
                 }
