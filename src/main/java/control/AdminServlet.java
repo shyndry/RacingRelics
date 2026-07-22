@@ -2,6 +2,8 @@ package control;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
@@ -179,6 +181,11 @@ public class AdminServlet extends HttpServlet {
                     String cleanName = submittedFileName.replaceAll("[^a-zA-Z0-9\\._-]", "_");
                     String fileName = System.currentTimeMillis() + "_" + cleanName;
 
+                    byte[] fileBytes;
+                    try (InputStream in = filePart.getInputStream()) {
+                        fileBytes = in.readAllBytes();
+                    }
+
                     // 1. Salvataggio nella cartella di deployment del server
                     String uploadPath = request.getServletContext().getRealPath("/images/prodotti");
                     if (uploadPath != null) {
@@ -186,10 +193,11 @@ public class AdminServlet extends HttpServlet {
                         if (!uploadDir.exists()) {
                             uploadDir.mkdirs();
                         }
-                        filePart.write(uploadPath + File.separator + fileName);
+                        File destFile = new File(uploadDir, fileName);
+                        Files.write(destFile.toPath(), fileBytes);
                     }
 
-                    // 2. Salvataggio nella cartella sorgente del progetto webapp/images/prodotti per persistenza permanente
+                    // 2. Salvataggio nella cartella sorgente del progetto per persistenza permanente
                     try {
                         String realRoot = request.getServletContext().getRealPath("/");
                         File srcFolder = null;
@@ -210,7 +218,8 @@ public class AdminServlet extends HttpServlet {
                         if (!srcFolder.exists()) {
                             srcFolder.mkdirs();
                         }
-                        filePart.write(srcFolder.getAbsolutePath() + File.separator + fileName);
+                        File srcFile = new File(srcFolder, fileName);
+                        Files.write(srcFile.toPath(), fileBytes);
                     } catch (Exception e) {
                         System.err.println("Impossibile salvare nella sorgente del progetto: " + e.getMessage());
                     }
