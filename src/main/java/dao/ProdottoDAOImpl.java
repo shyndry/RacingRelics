@@ -76,7 +76,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
     @Override
     public List<Prodotto> doRetrieveAll() throws SQLException {
-        String query = "SELECT * FROM Prodotto WHERE attivo = true";
+        String query = "SELECT * FROM Prodotto WHERE attivo = true AND quantita_disponibile > 0";
         List<Prodotto> prodotti = new ArrayList<>();
         try (Connection con = ConnessioneDB.getConnection();
                 PreparedStatement ps = con.prepareStatement(query);
@@ -90,7 +90,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
     @Override
     public List<Prodotto> doRetrieveByFiltri(String queryText, String scuderia, Integer anno, String pilota) throws SQLException {
-        StringBuilder query = new StringBuilder("SELECT * FROM Prodotto WHERE attivo = true");
+        StringBuilder query = new StringBuilder("SELECT * FROM Prodotto WHERE attivo = true AND quantita_disponibile > 0");
 
         if (queryText != null && !queryText.trim().isEmpty()) {
             query.append(" AND (LOWER(nome) LIKE ? OR LOWER(descrizione) LIKE ? OR LOWER(scuderia) LIKE ? OR LOWER(pilota) LIKE ? OR LOWER(gran_premio) LIKE ?)");

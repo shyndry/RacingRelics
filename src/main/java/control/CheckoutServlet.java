@@ -96,7 +96,7 @@ public class CheckoutServlet extends HttpServlet {
 
                 int idOrdineGenerato = ordineDAO.doSave(nuovoOrdine, con);
 
-                String updateStockQuery = "UPDATE Prodotto SET quantita_disponibile = ? WHERE id_prodotto = ?";
+                String updateStockQuery = "UPDATE Prodotto SET quantita_disponibile = ?, attivo = ? WHERE id_prodotto = ?";
 
                 try (PreparedStatement psStock = con.prepareStatement(updateStockQuery)) {
                     for (Map.Entry<Integer, Integer> entry : carrello.entrySet()) {
@@ -109,8 +109,11 @@ public class CheckoutServlet extends HttpServlet {
                             ordineDAO.doSaveComposizione(idOrdineGenerato, idProdotto, quantitaRichiesta, prodotto.getPrezzo(), con);
 
                             int nuovaDisponibilita = prodotto.getQuantitaDisponibile() - quantitaRichiesta;
+                            boolean nuovoAttivo = nuovaDisponibilita > 0;
+
                             psStock.setInt(1, nuovaDisponibilita);
-                            psStock.setInt(2, idProdotto);
+                            psStock.setBoolean(2, nuovoAttivo);
+                            psStock.setInt(3, idProdotto);
                             psStock.executeUpdate();
                         } else {
                             throw new SQLException("Scorte insufficienti per il cimelio: " + (prodotto != null ? prodotto.getNome() : idProdotto));
