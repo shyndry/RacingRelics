@@ -72,13 +72,21 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     @Override
     public List<Ordine> doRetrieveAll(String dataInizio, String dataFine) throws SQLException {
+        return doRetrieveAll(dataInizio, dataFine, null);
+    }
+
+    @Override
+    public List<Ordine> doRetrieveAll(String dataInizio, String dataFine, Integer idUtente) throws SQLException {
         StringBuilder query = new StringBuilder("SELECT * FROM Ordine WHERE 1=1");
 
-        if (dataInizio != null && !dataInizio.isEmpty()) {
+        if (dataInizio != null && !dataInizio.trim().isEmpty()) {
             query.append(" AND data_ordine >= ?");
         }
-        if (dataFine != null && !dataFine.isEmpty()) {
+        if (dataFine != null && !dataFine.trim().isEmpty()) {
             query.append(" AND data_ordine <= ?");
+        }
+        if (idUtente != null && idUtente > 0) {
+            query.append(" AND id_utente = ?");
         }
         query.append(" ORDER BY data_ordine DESC");
 
@@ -88,11 +96,14 @@ public class OrdineDAOImpl implements OrdineDAO {
                 PreparedStatement ps = con.prepareStatement(query.toString())) {
 
             int paramIndex = 1;
-            if (dataInizio != null && !dataInizio.isEmpty()) {
+            if (dataInizio != null && !dataInizio.trim().isEmpty()) {
                 ps.setString(paramIndex++, dataInizio + " 00:00:00");
             }
-            if (dataFine != null && !dataFine.isEmpty()) {
+            if (dataFine != null && !dataFine.trim().isEmpty()) {
                 ps.setString(paramIndex++, dataFine + " 23:59:59");
+            }
+            if (idUtente != null && idUtente > 0) {
+                ps.setInt(paramIndex++, idUtente);
             }
 
             try (ResultSet rs = ps.executeQuery()) {

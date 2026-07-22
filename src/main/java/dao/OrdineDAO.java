@@ -16,5 +16,7 @@ public interface OrdineDAO {
 
     List<Ordine> doRetrieveAll(String dataInizio, String dataFine) throws SQLException;
 
+    List<Ordine> doRetrieveAll(String dataInizio, String dataFine, Integer idUtente) throws SQLException;
+
     double doRetrieveTotaleOrdine(int idOrdine) throws SQLException;
 }
