@@ -74,8 +74,9 @@
                     <div class="carrello-summary">
                         <h2>Totale Complessivo: <span id="totaleCarrelloDisplay">€ <fmt:formatNumber value="${totaleComplessivo}" pattern="#,##0.00"/></span></h2>
                         
-                        <div class="carrello-actions" style="margin-bottom: 25px;">
+                        <div class="carrello-actions" style="margin-bottom: 25px; display: flex; gap: 15px; align-items: center;">
                             <a href="${pageContext.request.contextPath}/Catalogo" class="btn-secondary">Continua gli Acquisti</a>
+                            <button type="button" id="btnSvuotaCarrello" class="btn-clear-ajax" style="background: var(--racing-red, #e10600); color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: background 0.2s;">Svuota Carrello</button>
                         </div>
                     </div>
 

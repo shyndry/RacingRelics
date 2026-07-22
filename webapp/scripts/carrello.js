@@ -44,10 +44,24 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    // Evento 'click' sul pulsante Svuota Carrello
+    const btnSvuota = document.getElementById("btnSvuotaCarrello");
+    if (btnSvuota) {
+        btnSvuota.addEventListener("click", function (e) {
+            e.preventDefault();
+            if (confirm("Sei sicuro di voler svuotare interamente il carrello?")) {
+                nascondiErrore();
+                aggiornaCarrelloServer(null, 0, "clear");
+            }
+        });
+    }
+
     function aggiornaCarrelloServer(idProdotto, quantita, azione) {
         const formData = new URLSearchParams();
         formData.append("action", azione);
-        formData.append("idProdotto", idProdotto);
+        if (idProdotto !== null && idProdotto !== undefined) {
+            formData.append("idProdotto", idProdotto);
+        }
         if (azione === "update") {
             formData.append("quantita", quantita);
         }

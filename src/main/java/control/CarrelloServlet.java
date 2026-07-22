@@ -120,49 +120,53 @@ public class CarrelloServlet extends HttpServlet {
 
         String errorMessage = null;
 
-        if (idProdottoStr != null && action != null) {
-            try {
-                int idProdotto = Integer.parseInt(idProdottoStr);
+        if (action != null) {
+            if ("clear".equals(action) || "svuota".equals(action)) {
+                carrello.clear();
+            } else if (idProdottoStr != null) {
+                try {
+                    int idProdotto = Integer.parseInt(idProdottoStr);
 
-                if ("add".equals(action)) {
-                    Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
-                    if (p != null && p.isAttivo()) {
-                        int quantitaAttuale = carrello.getOrDefault(idProdotto, 0);
-                        int quantitaDaAggiungere = 1;
-                        String quantitaStr = request.getParameter("quantita");
-                        if (quantitaStr != null && !quantitaStr.trim().isEmpty()) {
-                            try {
-                                quantitaDaAggiungere = Integer.parseInt(quantitaStr);
-                            } catch (NumberFormatException ignored) {
+                    if ("add".equals(action)) {
+                        Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
+                        if (p != null && p.isAttivo()) {
+                            int quantitaAttuale = carrello.getOrDefault(idProdotto, 0);
+                            int quantitaDaAggiungere = 1;
+                            String quantitaStr = request.getParameter("quantita");
+                            if (quantitaStr != null && !quantitaStr.trim().isEmpty()) {
+                                try {
+                                    quantitaDaAggiungere = Integer.parseInt(quantitaStr);
+                                } catch (NumberFormatException ignored) {
+                                }
+                            }
+
+                            if (quantitaDaAggiungere > 0 && quantitaAttuale + quantitaDaAggiungere <= p.getQuantitaDisponibile()) {
+                                carrello.put(idProdotto, quantitaAttuale + quantitaDaAggiungere);
+                            } else {
+                                errorMessage = "Scorte insufficienti in magazzino per questo pezzo storico.";
                             }
                         }
+                    } else if ("remove".equals(action)) {
+                        carrello.remove(idProdotto);
+                    } else if ("update".equals(action)) {
+                        String quantitaStr = request.getParameter("quantita");
+                        if (quantitaStr != null) {
+                            int nuovaQuantita = Integer.parseInt(quantitaStr);
+                            Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
 
-                        if (quantitaDaAggiungere > 0 && quantitaAttuale + quantitaDaAggiungere <= p.getQuantitaDisponibile()) {
-                            carrello.put(idProdotto, quantitaAttuale + quantitaDaAggiungere);
-                        } else {
-                            errorMessage = "Scorte insufficienti in magazzino per questo pezzo storico.";
+                            if (p != null && nuovaQuantita > 0 && nuovaQuantita <= p.getQuantitaDisponibile()) {
+                                carrello.put(idProdotto, nuovaQuantita);
+                            } else if (nuovaQuantita <= 0) {
+                                carrello.remove(idProdotto);
+                            } else {
+                                errorMessage = "Quantità richiesta non disponibile in magazzino.";
+                            }
                         }
                     }
-                } else if ("remove".equals(action)) {
-                    carrello.remove(idProdotto);
-                } else if ("update".equals(action)) {
-                    String quantitaStr = request.getParameter("quantita");
-                    if (quantitaStr != null) {
-                        int nuovaQuantita = Integer.parseInt(quantitaStr);
-                        Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
-
-                        if (p != null && nuovaQuantita > 0 && nuovaQuantita <= p.getQuantitaDisponibile()) {
-                            carrello.put(idProdotto, nuovaQuantita);
-                        } else if (nuovaQuantita <= 0) {
-                            carrello.remove(idProdotto);
-                        } else {
-                            errorMessage = "Quantità richiesta non disponibile in magazzino.";
-                        }
-                    }
+                } catch (NumberFormatException | SQLException e) {
+                    System.err.println("Errore nella gestione del carrello: " + e.getMessage());
+                    errorMessage = "Si è verificato un errore nell'aggiornamento del carrello.";
                 }
-            } catch (NumberFormatException | SQLException e) {
-                System.err.println("Errore nella gestione del carrello: " + e.getMessage());
-                errorMessage = "Si è verificato un errore nell'aggiornamento del carrello.";
             }
         }
 
@@ -176,7 +180,13 @@ public class CarrelloServlet extends HttpServlet {
             } else {
                 double totaleComplessivo = 0.0;
                 double totaleItem = 0.0;
-                int targetId = (idProdottoStr != null) ? Integer.parseInt(idProdottoStr) : 0;
+                int targetId = 0;
+                if (idProdottoStr != null && !idProdottoStr.trim().isEmpty()) {
+                    try {
+                        targetId = Integer.parseInt(idProdottoStr);
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
 
                 for (Map.Entry<Integer, Integer> entry : carrello.entrySet()) {
                     try {
