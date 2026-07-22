@@ -7,23 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
 import model.Ordine;
 
 public class OrdineDAOImpl implements OrdineDAO {
-    
-    private static DataSource ds;
-
-    static {
-        try {
-            InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:comp/env/jdbc/RacingRelicsDB");
-        } catch (NamingException e) {
-            System.err.println("Errore nel lookup JNDI del DataSource in OrdineDAO: " + e.getMessage());
-        }
-    }
 
     // Riceve la connessione dalla Servlet per poter far parte di una transazione
     @Override
@@ -69,7 +55,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         String query = "SELECT * FROM Ordine WHERE id_utente = ? ORDER BY data_ordine DESC";
         List<Ordine> ordini = new ArrayList<>();
         
-        try (Connection con = ds.getConnection();
+        try (Connection con = ConnessioneDB.getConnection();
              PreparedStatement ps = con.prepareStatement(query)) {
             
             ps.setInt(1, idUtente);
@@ -96,7 +82,7 @@ public class OrdineDAOImpl implements OrdineDAO {
         
         List<Ordine> ordini = new ArrayList<>();
         
-        try (Connection con = ds.getConnection();
+        try (Connection con = ConnessioneDB.getConnection();
              PreparedStatement ps = con.prepareStatement(query.toString())) {
             
             int paramIndex = 1;
@@ -119,7 +105,7 @@ public class OrdineDAOImpl implements OrdineDAO {
     @Override
     public double doRetrieveTotaleOrdine(int idOrdine) throws SQLException {
     String query = "SELECT SUM(quantita * prezzo_acquisto) AS totale FROM ComposizioneOrdine WHERE id_ordine = ?";
-    try (Connection con = ds.getConnection();
+    try (Connection con = ConnessioneDB.getConnection();
          PreparedStatement ps = con.prepareStatement(query)) {
         ps.setInt(1, idOrdine);
         try (ResultSet rs = ps.executeQuery()) {
