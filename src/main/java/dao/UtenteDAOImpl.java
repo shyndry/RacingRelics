@@ -98,6 +98,12 @@ public class UtenteDAOImpl implements UtenteDAO {
     }
 
     private String toHash(String password) {
+        if (password == null) {
+            return null;
+        }
+        if (password.matches("^[0-9a-fA-F]{128}$")) {
+            return password;
+        }
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             byte[] digestBytes = md.digest(password.getBytes(StandardCharsets.UTF_8));

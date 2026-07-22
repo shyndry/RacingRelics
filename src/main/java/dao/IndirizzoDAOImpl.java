@@ -8,22 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Indirizzo;
 
-public class IndirizzoDAOImpl implements IndirizzoDAO{
+public class IndirizzoDAOImpl implements IndirizzoDAO {
     @Override
-    public void doSave(Indirizzo indirizzo) throws SQLException{
+    public int doSave(Indirizzo indirizzo) throws SQLException {
+        try (Connection con = ConnessioneDB.getConnection()) {
+            return doSave(indirizzo, con);
+        }
+    }
+
+    @Override
+    public int doSave(Indirizzo indirizzo, Connection con) throws SQLException {
         String query = "INSERT INTO Indirizzo (id_utente, via, citta, provincia, cap, tipologia) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-            
+        int idGenerato = 0;
+        try (PreparedStatement ps = con.prepareStatement(query, java.sql.Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, indirizzo.getIdUtente());
             ps.setString(2, indirizzo.getVia());
             ps.setString(3, indirizzo.getCitta());
             ps.setString(4, indirizzo.getProvincia());
             ps.setString(5, indirizzo.getCap());
             ps.setString(6, indirizzo.getTipologia());
-            
             ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    idGenerato = rs.getInt(1);
+                    indirizzo.setIdIndirizzo(idGenerato);
+                }
+            }
         }
+        return idGenerato;
     }
 
     @Override

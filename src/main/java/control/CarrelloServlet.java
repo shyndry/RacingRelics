@@ -15,15 +15,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import dao.IndirizzoDAO;
+import dao.IndirizzoDAOImpl;
 import dao.ProdottoDAO;
 import dao.ProdottoDAOImpl;
+import model.Indirizzo;
 import model.Prodotto;
+import model.Utente;
 
 @WebServlet("/Carrello")
 public class CarrelloServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private final ProdottoDAO prodottoDAO = new ProdottoDAOImpl();
+    private final IndirizzoDAO indirizzoDAO = new IndirizzoDAOImpl();
 
     public static class ItemCarrello {
         private Prodotto prodotto;
@@ -59,6 +64,16 @@ public class CarrelloServlet extends HttpServlet {
         if (errorFlash != null) {
             request.setAttribute("errorMessage", errorFlash);
             session.removeAttribute("carrelloError");
+        }
+
+        Utente utenteLoggato = (Utente) session.getAttribute("utenteLoggato");
+        if (utenteLoggato != null) {
+            try {
+                List<Indirizzo> listaIndirizzi = indirizzoDAO.doRetrieveByUser(utenteLoggato.getIdUtente());
+                request.setAttribute("listaIndirizzi", listaIndirizzi);
+            } catch (SQLException e) {
+                System.err.println("Errore nel recupero indirizzi per checkout: " + e.getMessage());
+            }
         }
 
         List<ItemCarrello> dettagliCarrello = new ArrayList<>();
@@ -113,9 +128,17 @@ public class CarrelloServlet extends HttpServlet {
                     Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
                     if (p != null && p.isAttivo()) {
                         int quantitaAttuale = carrello.getOrDefault(idProdotto, 0);
+                        int quantitaDaAggiungere = 1;
+                        String quantitaStr = request.getParameter("quantita");
+                        if (quantitaStr != null && !quantitaStr.trim().isEmpty()) {
+                            try {
+                                quantitaDaAggiungere = Integer.parseInt(quantitaStr);
+                            } catch (NumberFormatException ignored) {
+                            }
+                        }
 
-                        if (quantitaAttuale + 1 <= p.getQuantitaDisponibile()) {
-                            carrello.put(idProdotto, quantitaAttuale + 1);
+                        if (quantitaDaAggiungere > 0 && quantitaAttuale + quantitaDaAggiungere <= p.getQuantitaDisponibile()) {
+                            carrello.put(idProdotto, quantitaAttuale + quantitaDaAggiungere);
                         } else {
                             errorMessage = "Scorte insufficienti in magazzino per questo pezzo storico.";
                         }

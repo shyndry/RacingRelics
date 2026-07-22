@@ -14,7 +14,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public void doSave(Prodotto prodotto) throws SQLException {
         String query = "INSERT INTO Prodotto (nome, descrizione, prezzo_attuale, quantita_disponibile, immagine_path, scuderia, pilota, anno_campionato, gran_premio, attivo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+                PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, prodotto.getNome());
             ps.setString(2, prodotto.getDescrizione());
             ps.setDouble(3, prodotto.getPrezzo());
@@ -26,14 +26,14 @@ public class ProdottoDAOImpl implements ProdottoDAO {
             ps.setString(9, prodotto.getGranPremio());
             ps.setBoolean(10, prodotto.isAttivo());
             ps.executeUpdate();
-        }    
+        }
     }
 
     @Override
     public void doUpdate(Prodotto prodotto) throws SQLException {
         String query = "UPDATE Prodotto SET nome=?, descrizione=?, prezzo_attuale=?, quantita_disponibile=?, immagine_path=?, scuderia=?, pilota=?, anno_campionato=?, gran_premio=?, attivo=? WHERE id_prodotto=?";
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+                PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, prodotto.getNome());
             ps.setString(2, prodotto.getDescrizione());
             ps.setDouble(3, prodotto.getPrezzo());
@@ -53,7 +53,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public boolean doDelete(int idProdotto) throws SQLException {
         String query = "UPDATE Prodotto SET attivo = false WHERE id_prodotto = ?";
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+                PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idProdotto);
             return ps.executeUpdate() > 0;
         }
@@ -63,7 +63,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     public Prodotto doRetrieveByKey(int idProdotto) throws SQLException {
         String query = "SELECT * FROM Prodotto WHERE id_prodotto = ?";
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
+                PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idProdotto);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
@@ -79,8 +79,8 @@ public class ProdottoDAOImpl implements ProdottoDAO {
         String query = "SELECT * FROM Prodotto WHERE attivo = true";
         List<Prodotto> prodotti = new ArrayList<>();
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
+                PreparedStatement ps = con.prepareStatement(query);
+                ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
                 prodotti.add(estraiProdottoDaResultSet(rs));
             }
@@ -91,7 +91,7 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     @Override
     public List<Prodotto> doRetrieveByFiltri(String scuderia, Integer anno, String pilota) throws SQLException {
         StringBuilder query = new StringBuilder("SELECT * FROM Prodotto WHERE attivo = true");
-        
+
         if (scuderia != null && !scuderia.trim().isEmpty()) {
             query.append(" AND scuderia = ?");
         }
@@ -104,8 +104,8 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
         List<Prodotto> prodotti = new ArrayList<>();
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query.toString())) {
-            
+                PreparedStatement ps = con.prepareStatement(query.toString())) {
+
             int paramIndex = 1;
             if (scuderia != null && !scuderia.trim().isEmpty()) {
                 ps.setString(paramIndex++, scuderia);
@@ -144,15 +144,15 @@ public class ProdottoDAOImpl implements ProdottoDAO {
 
     @Override
     public List<Prodotto> doRetrieveAllAdmin() throws SQLException {
-    String query = "SELECT * FROM Prodotto";
-    List<Prodotto> prodotti = new ArrayList<>();
-    try (Connection con = ConnessioneDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(query);
-         ResultSet rs = ps.executeQuery()) {
-        while (rs.next()) {
-            prodotti.add(estraiProdottoDaResultSet(rs));
+        String query = "SELECT * FROM Prodotto";
+        List<Prodotto> prodotti = new ArrayList<>();
+        try (Connection con = ConnessioneDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(query);
+                ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                prodotti.add(estraiProdottoDaResultSet(rs));
+            }
         }
-    }
-    return prodotti;
+        return prodotti;
     }
 }

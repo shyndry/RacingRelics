@@ -45,7 +45,7 @@
                                     <c:out value="${ordine.stato}"/>
                                 </span>
                             </td>
-                            <td class="td-price">${mappaTotali[ordine.idOrdine]} €</td>
+                            <td class="td-price">€ <fmt:formatNumber value="${mappaTotali[ordine.idOrdine]}" pattern="#,##0.00"/></td>
                         </tr>
                     </c:forEach>
                 </tbody>

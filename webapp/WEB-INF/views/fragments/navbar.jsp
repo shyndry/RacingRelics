@@ -12,14 +12,7 @@
                 <a href="${pageContext.request.contextPath}/Catalogo">Catalogo Reperti</a>
             </li>
 
-            <c:if test="${empty sessionScope.utenteLoggato}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/Login" class="btn-nav-login">Accedi</a>
-                    <li><a href="${pageContext.request.contextPath}/Registrazione">Registrati</a></li>
-                </li>
-            </c:if>
-
-            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo == 'CLIENTE'}">
+            <c:if test="${empty sessionScope.utenteLoggato || sessionScope.utenteLoggato.ruolo == 'REGISTRATO'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Carrello" class="nav-cart">
                         Carrello
@@ -28,6 +21,18 @@
                         </c:if>
                     </a>
                 </li>
+            </c:if>
+
+            <c:if test="${empty sessionScope.utenteLoggato}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/Login" class="btn-nav-login">Accedi</a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/Registrazione" class="btn-nav-register">Registrati</a>
+                </li>
+            </c:if>
+
+            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo == 'REGISTRATO'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Ordini">Il mio Garage</a>
                 </li>

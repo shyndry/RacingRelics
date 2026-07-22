@@ -21,7 +21,7 @@ public class AuthFilter extends HttpFilter {
     
         String path = request.getServletPath();
 
-        boolean richiedeAdmin = path.startsWith("/admin/");
+        boolean richiedeAdmin = path.startsWith("/admin");
         boolean richiedeRegistrato = path.equals("/Checkout") || path.equals("/Ordini");
 
         if (!richiedeAdmin && !richiedeRegistrato) {

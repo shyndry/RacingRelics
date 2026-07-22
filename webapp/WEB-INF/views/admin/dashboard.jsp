@@ -91,7 +91,7 @@
                         <td>#<c:out value="${p.idProdotto}"/></td>
                         <td><strong><c:out value="${p.nome}"/></strong></td>
                         <td><c:out value="${p.scuderia}"/> (<c:out value="${p.anno}"/>)</td>
-                        <td>${p.prezzo} €</td>
+                        <td>€ <fmt:formatNumber value="${p.prezzo}" pattern="#,##0.00"/></td>
                         <td>${p.quantitaDisponibile} pz</td>
                         <td>
                             <span class="badge-status ${p.attivo ? 'status-active' : 'status-archived'}">

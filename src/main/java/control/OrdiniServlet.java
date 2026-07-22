@@ -18,17 +18,17 @@ import model.Utente;
 
 @WebServlet("/Ordini")
 public class OrdiniServlet extends HttpServlet {
-    
+
     private static final long serialVersionUID = 1L;
     private final OrdineDAO ordineDAO = new OrdineDAOImpl();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         HttpSession session = request.getSession(false);
         Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
-        
+
         if (utente == null) {
             response.sendRedirect(request.getContextPath() + "/Login");
             return;
@@ -36,17 +36,17 @@ public class OrdiniServlet extends HttpServlet {
 
         try {
             List<Ordine> listaOrdini = ordineDAO.doRetrieveByUser(utente.getIdUtente());
-            
+
             Map<Integer, Double> mappaTotali = new HashMap<>();
-            
+
             for (Ordine ordine : listaOrdini) {
                 double totale = ordineDAO.doRetrieveTotaleOrdine(ordine.getIdOrdine());
                 mappaTotali.put(ordine.getIdOrdine(), totale);
             }
-            
+
             request.setAttribute("listaOrdini", listaOrdini);
             request.setAttribute("mappaTotali", mappaTotali);
-            
+
         } catch (SQLException e) {
             System.err.println("Errore nel recupero dello storico ordini: " + e.getMessage());
             request.setAttribute("errorMessage", "Impossibile recuperare lo storico dei tuoi ordini.");
@@ -56,7 +56,7 @@ public class OrdiniServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         doGet(request, response);
     }

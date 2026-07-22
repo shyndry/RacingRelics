@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <jsp:include page="../fragments/header.jsp" />
 <jsp:include page="../fragments/navbar.jsp" />
@@ -29,24 +30,33 @@
                 </c:if>
             </div>
 
-            <p class="price-display">${prodotto.prezzo} €</p>
+            <p class="price-display">€ <fmt:formatNumber value="${prodotto.prezzo}" pattern="#,##0.00"/></p>
 
             <div class="description-box">
                 <h2>Storia del Reperto</h2>
                 <p><c:out value="${prodotto.descrizione}"/></p>
             </div>
 
-            <form action="${pageContext.request.contextPath}/Carrello" method="POST" class="add-to-cart-form">
-                <input type="hidden" name="action" value="add">
-                <input type="hidden" name="idProdotto" value="${prodotto.idProdotto}">
-                
-                <div class="quantity-selector">
-                    <label for="quantita">Quantità:</label>
-                    <input type="number" id="quantita" name="quantita" value="1" min="1" max="5">
-                </div>
+            <c:choose>
+                <c:when test="${prodotto.quantitaDisponibile > 0}">
+                    <form action="${pageContext.request.contextPath}/Carrello" method="POST" class="add-to-cart-form">
+                        <input type="hidden" name="action" value="add">
+                        <input type="hidden" name="idProdotto" value="${prodotto.idProdotto}">
+                        
+                        <div class="quantity-selector">
+                            <label for="quantita">Quantità:</label>
+                            <input type="number" id="quantita" name="quantita" value="1" min="1" max="${prodotto.quantitaDisponibile}">
+                        </div>
 
-                <button type="submit" class="btn-add-cart">Aggiungi al Garage</button>
-            </form>
+                        <button type="submit" class="btn-add-cart">Aggiungi al Garage</button>
+                    </form>
+                </c:when>
+                <c:otherwise>
+                    <div class="out-of-stock-badge" style="padding: 12px; background: rgba(225, 6, 0, 0.15); border: 1px solid var(--red); color: var(--red); border-radius: 6px; text-align: center; font-weight: bold;">
+                        Reperto Attualmente Esaurito in Magazzino
+                    </div>
+                </c:otherwise>
+            </c:choose>
         </div>
     </section>
 </main>

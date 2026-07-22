@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <jsp:include page="../fragments/header.jsp" />
 <jsp:include page="../fragments/navbar.jsp" />
@@ -70,7 +71,7 @@
                                 </div>
                                 
                                 <div class="product-footer">
-                                    <span class="product-price">${p.prezzo} €</span>
+                                    <span class="product-price">€ <fmt:formatNumber value="${p.prezzo}" pattern="#,##0.00"/></span>
                                     <a href="${pageContext.request.contextPath}/Prodotto?id=${p.idProdotto}" class="btn-details">Esamina</a>
                                 </div>
                             </div>

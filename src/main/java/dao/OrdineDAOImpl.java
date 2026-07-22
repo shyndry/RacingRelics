@@ -16,16 +16,17 @@ public class OrdineDAOImpl implements OrdineDAO {
     public int doSave(Ordine ordine, Connection con) throws SQLException {
         String query = "INSERT INTO Ordine (id_utente, id_indirizzo_consegna, stato) VALUES (?, ?, ?)";
         int idGenerato = 0;
-        
-        // NOTA: Non usiamo il try-with-resources sulla Connection qui, perché deve chiuderla la Servlet alla fine della transazione
+
+        // NOTA: Non usiamo il try-with-resources sulla Connection qui, perché deve
+        // chiuderla la Servlet alla fine della transazione
         try (PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
-            
+
             ps.setInt(1, ordine.getIdUtente());
             ps.setInt(2, ordine.getIdIndirizzoConsegna());
             ps.setString(3, ordine.getStato());
-            
+
             ps.executeUpdate();
-            
+
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     idGenerato = rs.getInt(1);
@@ -37,15 +38,16 @@ public class OrdineDAOImpl implements OrdineDAO {
     }
 
     @Override
-    public void doSaveComposizione(int idOrdine, int idProdotto, int quantita, double prezzoAcquisto, Connection con) throws SQLException {
+    public void doSaveComposizione(int idOrdine, int idProdotto, int quantita, double prezzoAcquisto, Connection con)
+            throws SQLException {
         String query = "INSERT INTO ComposizioneOrdine (id_ordine, id_prodotto, quantita, prezzo_acquisto) VALUES (?, ?, ?, ?)";
-        
+
         try (PreparedStatement ps = con.prepareStatement(query)) {
             ps.setInt(1, idOrdine);
             ps.setInt(2, idProdotto);
             ps.setInt(3, quantita);
-            ps.setDouble(4, prezzoAcquisto); 
-            
+            ps.setDouble(4, prezzoAcquisto);
+
             ps.executeUpdate();
         }
     }
@@ -54,10 +56,10 @@ public class OrdineDAOImpl implements OrdineDAO {
     public List<Ordine> doRetrieveByUser(int idUtente) throws SQLException {
         String query = "SELECT * FROM Ordine WHERE id_utente = ? ORDER BY data_ordine DESC";
         List<Ordine> ordini = new ArrayList<>();
-        
+
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query)) {
-            
+                PreparedStatement ps = con.prepareStatement(query)) {
+
             ps.setInt(1, idUtente);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -71,7 +73,7 @@ public class OrdineDAOImpl implements OrdineDAO {
     @Override
     public List<Ordine> doRetrieveAll(String dataInizio, String dataFine) throws SQLException {
         StringBuilder query = new StringBuilder("SELECT * FROM Ordine WHERE 1=1");
-        
+
         if (dataInizio != null && !dataInizio.isEmpty()) {
             query.append(" AND data_ordine >= ?");
         }
@@ -79,12 +81,12 @@ public class OrdineDAOImpl implements OrdineDAO {
             query.append(" AND data_ordine <= ?");
         }
         query.append(" ORDER BY data_ordine DESC");
-        
+
         List<Ordine> ordini = new ArrayList<>();
-        
+
         try (Connection con = ConnessioneDB.getConnection();
-             PreparedStatement ps = con.prepareStatement(query.toString())) {
-            
+                PreparedStatement ps = con.prepareStatement(query.toString())) {
+
             int paramIndex = 1;
             if (dataInizio != null && !dataInizio.isEmpty()) {
                 ps.setString(paramIndex++, dataInizio + " 00:00:00");
@@ -92,7 +94,7 @@ public class OrdineDAOImpl implements OrdineDAO {
             if (dataFine != null && !dataFine.isEmpty()) {
                 ps.setString(paramIndex++, dataFine + " 23:59:59");
             }
-            
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     ordini.add(estraiOrdine(rs));
@@ -104,18 +106,19 @@ public class OrdineDAOImpl implements OrdineDAO {
 
     @Override
     public double doRetrieveTotaleOrdine(int idOrdine) throws SQLException {
-    String query = "SELECT SUM(quantita * prezzo_acquisto) AS totale FROM ComposizioneOrdine WHERE id_ordine = ?";
-    try (Connection con = ConnessioneDB.getConnection();
-         PreparedStatement ps = con.prepareStatement(query)) {
-        ps.setInt(1, idOrdine);
-        try (ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) {
-                return rs.getDouble("totale");
+        String query = "SELECT SUM(quantita * prezzo_acquisto) AS totale FROM ComposizioneOrdine WHERE id_ordine = ?";
+        try (Connection con = ConnessioneDB.getConnection();
+                PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setInt(1, idOrdine);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("totale");
+                }
             }
         }
+        return 0.0;
     }
-    return 0.0;
-}
+
     private Ordine estraiOrdine(ResultSet rs) throws SQLException {
         Ordine o = new Ordine();
         o.setIdOrdine(rs.getInt("id_ordine"));
