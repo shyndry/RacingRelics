@@ -17,7 +17,7 @@
         </c:if>
 
         <%-- Box per messaggi di errore sul DOM (No Alert!) --%>
-        <div id="errorBox" class="alert-error" <c:if test="${empty errorMessage}">style="display: none;"</c:if>>
+        <div id="errorBox" class="alert-error" style="${empty errorMessage ? 'display: none;' : ''}">
             <c:out value="${errorMessage}" />
         </div>
 
@@ -98,7 +98,7 @@
                                         </div>
                                     </c:if>
 
-                                    <div id="newAddressContainer" style="<c:if test="${not empty listaIndirizzi}">display: none; </c:if>border-top: 1px solid var(--border-soft); padding-top: 15px; margin-top: 15px;">
+                                    <div id="newAddressContainer" style="${not empty listaIndirizzi ? 'display: none; ' : ''}border-top: 1px solid var(--border-soft); padding-top: 15px; margin-top: 15px;">
                                         <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: var(--brass);">Nuovo Indirizzo di Spedizione</h4>
                                         <div class="form-group" style="margin-bottom: 12px;">
                                             <label for="via">Via e Civico *</label>
