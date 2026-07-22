@@ -12,16 +12,14 @@
                 <a href="${pageContext.request.contextPath}/Catalogo">Catalogo Reperti</a>
             </li>
 
-            <c:if test="${empty sessionScope.utenteLoggato || sessionScope.utenteLoggato.ruolo != 'ADMIN'}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/Carrello" class="nav-cart">
-                        Carrello
-                        <c:if test="${not empty sessionScope.carrello && sessionScope.carrello.size() > 0}">
-                            <span class="cart-badge">${sessionScope.carrello.size()}</span>
-                        </c:if>
-                    </a>
-                </li>
-            </c:if>
+            <li>
+                <a href="${pageContext.request.contextPath}/Carrello" class="nav-cart">
+                    Carrello
+                    <c:if test="${not empty sessionScope.carrello && sessionScope.carrello.size() > 0}">
+                        <span class="cart-badge">${sessionScope.carrello.size()}</span>
+                    </c:if>
+                </a>
+            </li>
 
             <c:if test="${empty sessionScope.utenteLoggato}">
                 <li>
@@ -32,19 +30,17 @@
                 </li>
             </c:if>
 
-            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo != 'ADMIN'}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/Ordini">Il mio Garage</a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/Logout" class="btn-nav-logout">Esci</a>
-                </li>
-            </c:if>
-
-            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo == 'ADMIN'}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-admin-link">Dashboard Admin</a>
-                </li>
+            <c:if test="${not empty sessionScope.utenteLoggato}">
+                <c:if test="${sessionScope.utenteLoggato.ruolo == 'ADMIN' || sessionScope.utenteLoggato.ruolo == 'admin'}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/admin/dashboard" class="nav-admin-link">Dashboard Admin</a>
+                    </li>
+                </c:if>
+                <c:if test="${sessionScope.utenteLoggato.ruolo != 'ADMIN' && sessionScope.utenteLoggato.ruolo != 'admin'}">
+                    <li>
+                        <a href="${pageContext.request.contextPath}/Ordini">Il mio Garage</a>
+                    </li>
+                </c:if>
                 <li>
                     <a href="${pageContext.request.contextPath}/Logout" class="btn-nav-logout">Esci</a>
                 </li>
