@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const contextPath = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1));
+    const rawContext = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1));
+    const contextPath = (rawContext && rawContext !== '/') ? rawContext : '';
     const errorBox = document.getElementById("errorBox");
 
     function mostraErrore(messaggio) {
