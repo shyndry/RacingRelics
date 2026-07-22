@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">
+  <rect width="400" height="300" fill="#14161b"/>
+  <rect x="10" y="10" width="380" height="280" rx="6" fill="#1b1e24" stroke="#333a42" stroke-width="2"/>
+  <path d="M0 0 L400 300" stroke="rgba(225,6,0,0.15)" stroke-width="40"/>
+  <circle cx="200" cy="130" r="45" fill="#21252b" stroke="#c9a464" stroke-width="3"/>
+  <path d="M185 130 C185 115, 215 115, 215 130 C215 145, 185 145, 185 130 Z" fill="none" stroke="#e10600" stroke-width="4"/>
+  <path d="M190 145 L210 145 L205 160 L195 160 Z" fill="#c9a464"/>
+  <text x="200" y="215" text-anchor="middle" fill="#edeff2" font-family="'Inter', sans-serif" font-size="16" font-weight="bold" letter-spacing="2">RACING RELICS</text>
+  <text x="200" y="240" text-anchor="middle" fill="#9aa1ac" font-family="'Inter', sans-serif" font-size="12" letter-spacing="1">MEMORABILIA F1</text>
+</svg>

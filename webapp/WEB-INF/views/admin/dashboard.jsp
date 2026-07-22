@@ -89,7 +89,15 @@
                 <c:forEach var="p" items="${prodotti}">
                     <tr>
                         <td>#<c:out value="${p.idProdotto}"/></td>
-                        <td><strong><c:out value="${p.nome}"/></strong></td>
+                        <td>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <img src="${pageContext.request.contextPath}/images/prodotti/${not empty p.immagine ? p.immagine : 'default.svg'}" 
+                                     alt="<c:out value='${p.nome}'/>" 
+                                     style="width: 42px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);"
+                                     onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/prodotti/default.svg';">
+                                <strong><c:out value="${p.nome}"/></strong>
+                            </div>
+                        </td>
                         <td><c:out value="${p.scuderia}"/> (<c:out value="${p.anno}"/>)</td>
                         <td>€ <fmt:formatNumber value="${p.prezzo}" pattern="#,##0.00"/></td>
                         <td>${p.quantitaDisponibile} pz</td>
