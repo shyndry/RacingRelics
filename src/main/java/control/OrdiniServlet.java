@@ -30,7 +30,7 @@ public class OrdiniServlet extends HttpServlet {
         Utente utente = (session != null) ? (Utente) session.getAttribute("utenteLoggato") : null;
         
         if (utente == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            response.sendRedirect(request.getContextPath() + "/Login");
             return;
         }
 
