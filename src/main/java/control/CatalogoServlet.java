@@ -56,6 +56,29 @@ public class CatalogoServlet extends HttpServlet {
                 prodotti = prodottoDAO.doRetrieveAll();
             }
 
+            boolean isAjax = "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
+            if (isAjax) {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                StringBuilder json = new StringBuilder("[");
+                for (int i = 0; i < prodotti.size(); i++) {
+                    Prodotto p = prodotti.get(i);
+                    json.append("{")
+                        .append("\"idProdotto\":").append(p.getIdProdotto()).append(",")
+                        .append("\"nome\":").append(jsonEscape(p.getNome())).append(",")
+                        .append("\"scuderia\":").append(jsonEscape(p.getScuderia())).append(",")
+                        .append("\"pilota\":").append(jsonEscape(p.getPilota())).append(",")
+                        .append("\"prezzo\":").append(p.getPrezzo()).append(",")
+                        .append("\"immagine\":").append(jsonEscape(p.getImmagine()))
+                        .append("}");
+                    if (i < prodotti.size() - 1) json.append(",");
+                }
+                json.append("]");
+                response.getWriter().write(json.toString());
+                return;
+            }
+
             request.setAttribute("prodotti", prodotti);
 
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/views/common/catalogo.jsp");
@@ -66,6 +89,11 @@ public class CatalogoServlet extends HttpServlet {
             request.setAttribute("errorMessage", "Impossibile caricare il catalogo in questo momento. Riprova più tardi.");
             request.getRequestDispatcher("/WEB-INF/views/common/catalogo.jsp").forward(request, response);
         }
+    }
+
+    private String jsonEscape(String s) {
+        if (s == null) return "null";
+        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", " ").replace("\r", " ") + "\"";
     }
 
     @Override

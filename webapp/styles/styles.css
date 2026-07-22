@@ -127,22 +127,29 @@ hr { border: none; }
     color: var(--text);
 }
 
+.navbar-search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 420px;
+    margin: 0 24px;
+}
+
 .navbar-search-form {
     display: flex;
     align-items: center;
-    background: var(--bg-elevated, #1b1e24);
-    border: 1px solid var(--border, #333a42);
+    background: rgba(27, 30, 36, 0.85);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--border-soft, #262b32);
     border-radius: var(--radius-md, 6px);
     overflow: hidden;
-    margin: 0 20px;
-    max-width: 380px;
-    flex: 1;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .navbar-search-form:focus-within {
     border-color: var(--brass, #c9a464);
-    box-shadow: 0 0 8px rgba(201, 164, 100, 0.25);
+    box-shadow: 0 0 12px rgba(201, 164, 100, 0.25), inset 0 1px 3px rgba(0, 0, 0, 0.2);
+    background: var(--bg-elevated, #1b1e24);
 }
 
 .navbar-search-input {
@@ -150,7 +157,7 @@ hr { border: none; }
     border: none;
     outline: none;
     color: var(--text, #edeff2);
-    padding: 8px 14px;
+    padding: 9px 14px;
     font-size: 0.88rem;
     font-family: var(--font-body);
     width: 100%;
@@ -158,22 +165,126 @@ hr { border: none; }
 
 .navbar-search-input::placeholder {
     color: var(--text-faint, #636973);
+    font-style: italic;
+    opacity: 0.8;
+}
+
+.navbar-search-clear {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #9aa1ac);
+    font-size: 1.2rem;
+    line-height: 1;
+    padding: 0 8px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+.navbar-search-clear:hover {
+    color: var(--red, #e10600);
 }
 
 .navbar-search-btn {
     background: transparent;
     border: none;
     color: var(--text-muted, #9aa1ac);
-    padding: 8px 12px;
+    padding: 9px 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, transform 0.15s ease;
 }
 
 .navbar-search-btn:hover {
     color: var(--brass, #c9a464);
+    transform: scale(1.1);
+}
+
+/* Live Search Results Dropdown */
+.navbar-search-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--surface, #21252b);
+    border: 1px solid var(--border, #333a42);
+    border-top: 2px solid var(--brass, #c9a464);
+    border-radius: var(--radius-md, 6px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65);
+    z-index: 1000;
+    max-height: 380px;
+    overflow-y: auto;
+    backdrop-filter: blur(12px);
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-soft, #262b32);
+    text-decoration: none;
+    color: var(--text, #edeff2);
+    transition: background 0.15s ease, border-left-color 0.15s ease;
+    border-left: 3px solid transparent;
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background: rgba(201, 164, 100, 0.08);
+    border-left-color: var(--brass, #c9a464);
+}
+
+.search-result-item img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border, #333a42);
+    flex-shrink: 0;
+}
+
+.search-result-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.search-result-title {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text, #edeff2);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-meta {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--text-muted, #9aa1ac);
+    margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-price {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--brass, #c9a464);
+    flex-shrink: 0;
+}
+
+.search-no-results {
+    padding: 16px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-faint, #636973);
+    font-style: italic;
 }
 
 .navbar-links {
