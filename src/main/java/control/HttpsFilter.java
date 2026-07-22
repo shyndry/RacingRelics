@@ -15,8 +15,8 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 /**
  * Filter per garantire la piena compatibilità con il protocollo HTTPS e
  * con Reverse Proxy (Cloudflare, Nginx, AWS ALB, Heroku, Render, ecc.).
- * Gestisce le intestazioni X-Forwarded-Proto/Ssl, forza lo schema https nei redirect
- * e imposta le intestazioni di sicurezza HTTPS (HSTS, Anti-Sniff, Referrer-Policy).
+ * Gestisce le intestazioni X-Forwarded-Proto/Ssl, forza lo schema https nei redirect,
+ * applica dinamicamente il flag Secure ai cookie in HTTPS e imposta le intestazioni di sicurezza (HSTS).
  */
 @WebFilter("/*")
 public class HttpsFilter implements Filter {
@@ -90,7 +90,7 @@ public class HttpsFilter implements Filter {
             };
         }
 
-        // Incapsuliamo la risposta per convertire eventuali redirect HTTP in HTTPS
+        // Incapsuliamo la risposta per convertire redirect ed aggiungere il flag Secure ai cookie solo se in HTTPS
         final boolean httpsActive = isHttps;
         HttpServletResponse wrappedResp = new HttpServletResponseWrapper(resp) {
             @Override
@@ -99,6 +99,32 @@ public class HttpsFilter implements Filter {
                     location = "https://" + location.substring(7);
                 }
                 super.sendRedirect(location);
+            }
+
+            @Override
+            public void addHeader(String name, String value) {
+                if (httpsActive && "Set-Cookie".equalsIgnoreCase(name) && value != null) {
+                    if (!value.toLowerCase().contains("secure")) {
+                        value = value + "; Secure";
+                    }
+                    if (!value.toLowerCase().contains("samesite")) {
+                        value = value + "; SameSite=Lax";
+                    }
+                }
+                super.addHeader(name, value);
+            }
+
+            @Override
+            public void setHeader(String name, String value) {
+                if (httpsActive && "Set-Cookie".equalsIgnoreCase(name) && value != null) {
+                    if (!value.toLowerCase().contains("secure")) {
+                        value = value + "; Secure";
+                    }
+                    if (!value.toLowerCase().contains("samesite")) {
+                        value = value + "; SameSite=Lax";
+                    }
+                }
+                super.setHeader(name, value);
             }
         };
 
