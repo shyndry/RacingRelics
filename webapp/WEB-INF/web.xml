@@ -68,6 +68,16 @@
         </cookie-config>
     </session-config>
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>HTTPS Enforcement</web-resource-name>
+            <url-pattern>/*</url-pattern>
+        </web-resource-collection>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
     <resource-ref>
         <description>Connection Pool per Racing Relics DB</description>
         <res-ref-name>jdbc/RacingRelicsDB</res-ref-name>
