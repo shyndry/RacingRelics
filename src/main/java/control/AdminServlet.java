@@ -1,14 +1,18 @@
 package control;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
 import dao.OrdineDAO;
 import dao.OrdineDAOImpl;
 import dao.ProdottoDAO;
@@ -17,6 +21,11 @@ import model.Ordine;
 import model.Prodotto;
 
 @WebServlet("/admin/dashboard")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 2,
+    maxFileSize = 1024 * 1024 * 10,
+    maxRequestSize = 1024 * 1024 * 50
+)
 public class AdminServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -87,15 +96,17 @@ public class AdminServlet extends HttpServlet {
                 Prodotto nuovoProdotto = new Prodotto();
                 nuovoProdotto.setNome(request.getParameter("nome"));
                 nuovoProdotto.setDescrizione(request.getParameter("descrizione"));
-
-                // Allineamento geometrico con i nuovi nomi dei metodi del JavaBean Prodotto
                 nuovoProdotto.setPrezzo(Double.parseDouble(request.getParameter("prezzo")));
                 nuovoProdotto.setQuantitaDisponibile(Integer.parseInt(request.getParameter("quantita")));
-                nuovoProdotto.setImmagine(request.getParameter("immaginePath"));
+                
+                String textImage = request.getParameter("immaginePath");
+                String fallbackImage = (textImage != null && !textImage.trim().isEmpty()) ? textImage.trim() : "default.jpg";
+                String savedImage = salvaImmagineCaricata(request, "immagineFile", fallbackImage);
+                nuovoProdotto.setImmagine(savedImage);
+
                 nuovoProdotto.setScuderia(request.getParameter("scuderia"));
                 nuovoProdotto.setPilota(request.getParameter("pilota"));
                 nuovoProdotto.setAnno(Integer.parseInt(request.getParameter("anno")));
-
                 nuovoProdotto.setGranPremio(request.getParameter("granPremio"));
                 nuovoProdotto.setAttivo(true);
 
@@ -110,7 +121,12 @@ public class AdminServlet extends HttpServlet {
                         p.setDescrizione(request.getParameter("descrizione"));
                         p.setPrezzo(Double.parseDouble(request.getParameter("prezzo")));
                         p.setQuantitaDisponibile(Integer.parseInt(request.getParameter("quantita")));
-                        p.setImmagine(request.getParameter("immaginePath"));
+                        
+                        String textImage = request.getParameter("immaginePath");
+                        String fallbackImage = (textImage != null && !textImage.trim().isEmpty()) ? textImage.trim() : p.getImmagine();
+                        String savedImage = salvaImmagineCaricata(request, "immagineFile", fallbackImage);
+                        p.setImmagine(savedImage);
+
                         p.setScuderia(request.getParameter("scuderia"));
                         p.setPilota(request.getParameter("pilota"));
                         p.setAnno(Integer.parseInt(request.getParameter("anno")));
@@ -151,5 +167,32 @@ public class AdminServlet extends HttpServlet {
         // PRG garantito al 100%: svuota i dati del payload POST evitando inserimenti
         // duplicati al refresh
         response.sendRedirect(request.getContextPath() + "/admin/dashboard");
+    }
+
+    private String salvaImmagineCaricata(HttpServletRequest request, String inputName, String fallbackName)
+            throws IOException, ServletException {
+        try {
+            Part filePart = request.getPart(inputName);
+            if (filePart != null && filePart.getSize() > 0) {
+                String submittedFileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                if (submittedFileName != null && !submittedFileName.trim().isEmpty()) {
+                    String cleanName = submittedFileName.replaceAll("[^a-zA-Z0-9\\._-]", "_");
+                    String fileName = System.currentTimeMillis() + "_" + cleanName;
+
+                    String uploadPath = request.getServletContext().getRealPath("/images/prodotti");
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+
+                    filePart.write(uploadPath + File.separator + fileName);
+
+                    return fileName;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Errore nel salvataggio dell'immagine: " + e.getMessage());
+        }
+        return fallbackName;
     }
 }

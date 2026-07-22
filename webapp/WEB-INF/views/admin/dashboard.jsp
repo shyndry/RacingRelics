@@ -16,7 +16,7 @@
 
     <section class="admin-section insert-section">
         <h2>Aggiungi un Nuovo Reperto Storico</h2>
-        <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" class="admin-form">
+        <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" enctype="multipart/form-data" class="admin-form">
             <input type="hidden" name="action" value="insert">
 
             <div class="form-group-row">
@@ -60,8 +60,8 @@
                     <input type="text" id="granPremio" name="granPremio" placeholder="es. Monza GP">
                 </div>
                 <div class="form-group">
-                    <label for="immaginePath">Nome File Immagine</label>
-                    <input type="text" id="immaginePath" name="immaginePath" placeholder="es. volante_f2004.jpg" value="default.jpg">
+                    <label for="immagineFile">Carica Immagine Reperto</label>
+                    <input type="file" id="immagineFile" name="immagineFile" accept="image/*" style="width: 100%; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;">
                 </div>
             </div>
 
@@ -186,7 +186,7 @@
                 <h2 style="margin: 0; font-size: 1.3rem;">Modifica Reperto Storico #<span id="editIdProdottoDisplay"></span></h2>
                 <button type="button" onclick="chiudiModalModifica()" style="background: none; border: none; color: #999; font-size: 1.5rem; cursor: pointer;">&times;</button>
             </div>
-            <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" class="admin-form">
+            <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" enctype="multipart/form-data" class="admin-form">
                 <input type="hidden" name="action" value="update">
                 <input type="hidden" id="editIdProdotto" name="idProdotto">
 
@@ -231,8 +231,9 @@
                         <input type="text" id="editGranPremio" name="granPremio" style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;">
                     </div>
                     <div class="form-group" style="flex: 1;">
-                        <label for="editImmaginePath" style="display: block; margin-bottom: 5px; font-weight: 600;">Immagine Path</label>
-                        <input type="text" id="editImmaginePath" name="immaginePath" style="width: 100%; padding: 8px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;">
+                        <label for="editImmagineFile" style="display: block; margin-bottom: 5px; font-weight: 600;">Carica Nuova Immagine</label>
+                        <input type="file" id="editImmagineFile" name="immagineFile" accept="image/*" style="width: 100%; padding: 6px; background: var(--bg); border: 1px solid var(--border); color: var(--text); border-radius: 4px;">
+                        <input type="hidden" id="editImmaginePath" name="immaginePath">
                     </div>
                     <div class="form-group" style="flex: 1;">
                         <label for="editAttivo" style="display: block; margin-bottom: 5px; font-weight: 600;">Stato Attivo</label>
