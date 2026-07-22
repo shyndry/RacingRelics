@@ -12,7 +12,7 @@
                 <a href="${pageContext.request.contextPath}/Catalogo">Catalogo Reperti</a>
             </li>
 
-            <c:if test="${empty sessionScope.utenteLoggato || sessionScope.utenteLoggato.ruolo == 'REGISTRATO'}">
+            <c:if test="${empty sessionScope.utenteLoggato || sessionScope.utenteLoggato.ruolo != 'ADMIN'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Carrello" class="nav-cart">
                         Carrello
@@ -32,7 +32,7 @@
                 </li>
             </c:if>
 
-            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo == 'REGISTRATO'}">
+            <c:if test="${not empty sessionScope.utenteLoggato && sessionScope.utenteLoggato.ruolo != 'ADMIN'}">
                 <li>
                     <a href="${pageContext.request.contextPath}/Ordini">Il mio Garage</a>
                 </li>
