@@ -94,11 +94,11 @@
                         <td>€ <fmt:formatNumber value="${p.prezzo}" pattern="#,##0.00"/></td>
                         <td>${p.quantitaDisponibile} pz</td>
                         <td>
-                            <span class="badge-status ${p.attivo ? 'status-active' : 'status-archived'}">
+                            <span id="status-badge-${p.idProdotto}" class="badge-status ${p.attivo ? 'status-active' : 'status-archived'}">
                                 ${p.attivo ? "Attivo" : "Archiviato"}
                             </span>
                         </td>
-                        <td style="display: flex; gap: 8px; align-items: center;">
+                        <td id="azioni-cell-${p.idProdotto}" style="display: flex; gap: 8px; align-items: center;">
                             <button type="button" class="btn-table-edit" 
                                     data-id="${p.idProdotto}" 
                                     data-nome="<c:out value="${p.nome}"/>" 
@@ -113,11 +113,7 @@
                                     data-descrizione="<c:out value="${p.descrizione}"/>" 
                                     style="background: var(--brass, #c5a059); color: #000; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">Modifica</button>
                             <c:if test="${p.attivo}">
-                                <form action="${pageContext.request.contextPath}/admin/dashboard" method="POST" onsubmit="return confirm('Sicuro di voler archiviare questo reperto?');" style="margin:0;">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="idProdotto" value="${p.idProdotto}">
-                                    <button type="submit" class="btn-table-delete">Archivia (Soft-Delete)</button>
-                                </form>
+                                <button type="button" class="btn-table-delete btn-archivia-modal" data-id="${p.idProdotto}" data-nome="<c:out value="${p.nome}"/>">Archivia (Soft-Delete)</button>
                             </c:if>
                         </td>
                     </tr>
@@ -255,9 +251,25 @@
         </div>
     </div>
 
+    <!-- Modal Conferma Archiviazione Prodotto -->
+    <div id="modalConfermaArchivia" class="modal" style="display:none; position: fixed; z-index: 1100; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(4px);">
+        <div class="modal-content" style="background-color: var(--surface, #1e1e1e); margin: 12% auto; padding: 25px; border: 1px solid var(--border, #333); border-radius: 8px; width: 90%; max-width: 480px; color: var(--text, #fff); text-align: center;">
+            <h3 style="margin-top: 0; color: var(--racing-red, #e10600); font-size: 1.3rem;">Conferma Archiviazione Reperto</h3>
+            <p style="margin: 15px 0 25px 0; font-size: 0.95rem; color: #ccc;">
+                Sei sicuro di voler archiviare (soft-delete) il reperto <strong id="archiviaNomeProdotto" style="color: #fff;"></strong> (#<span id="archiviaIdProdottoDisplay"></span>)?
+            </p>
+            <div style="display: flex; justify-content: center; gap: 15px;">
+                <button type="button" onclick="chiudiModalArchivia()" class="btn-secondary" style="padding: 10px 20px; cursor: pointer;">Annulla</button>
+                <button type="button" id="btnConfermaArchiviazione" class="btn-danger" style="background: var(--racing-red, #e10600); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600;">Sì, Archivia Reperto</button>
+            </div>
+        </div>
+    </div>
+
 </main>
 
 <script>
+let idProdottoDaArchiviare = null;
+
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll(".btn-table-edit").forEach(function(btn) {
         btn.addEventListener("click", function() {
@@ -276,16 +288,77 @@ document.addEventListener("DOMContentLoaded", function() {
             document.getElementById('modalModificaProdotto').style.display = 'block';
         });
     });
+
+    document.querySelectorAll(".btn-archivia-modal").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            idProdottoDaArchiviare = this.dataset.id;
+            document.getElementById("archiviaIdProdottoDisplay").textContent = idProdottoDaArchiviare;
+            document.getElementById("archiviaNomeProdotto").textContent = this.dataset.nome || "";
+            document.getElementById("modalConfermaArchivia").style.display = "block";
+        });
+    });
+
+    const btnConferma = document.getElementById("btnConfermaArchiviazione");
+    if (btnConferma) {
+        btnConferma.addEventListener("click", function() {
+            if (!idProdottoDaArchiviare) return;
+            
+            const contextPath = "${pageContext.request.contextPath}";
+            const formData = new URLSearchParams();
+            formData.append("action", "delete");
+            formData.append("idProdotto", idProdottoDaArchiviare);
+
+            fetch(contextPath + "/admin/dashboard", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: formData.toString()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    const badge = document.getElementById("status-badge-" + idProdottoDaArchiviare);
+                    if (badge) {
+                        badge.className = "badge-status status-archived";
+                        badge.textContent = "Archiviato";
+                    }
+                    const cell = document.getElementById("azioni-cell-" + idProdottoDaArchiviare);
+                    if (cell) {
+                        const deleteBtn = cell.querySelector(".btn-archivia-modal");
+                        if (deleteBtn) deleteBtn.remove();
+                    }
+                    chiudiModalArchivia();
+                } else {
+                    alert(data.message || "Errore durante l'archiviazione.");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                chiudiModalArchivia();
+            });
+        });
+    }
 });
 
 function chiudiModalModifica() {
     document.getElementById('modalModificaProdotto').style.display = 'none';
 }
 
+function chiudiModalArchivia() {
+    idProdottoDaArchiviare = null;
+    document.getElementById('modalConfermaArchivia').style.display = 'none';
+}
+
 window.onclick = function(event) {
-    var modal = document.getElementById('modalModificaProdotto');
-    if (event.target === modal) {
+    var modalEdit = document.getElementById('modalModificaProdotto');
+    var modalDelete = document.getElementById('modalConfermaArchivia');
+    if (event.target === modalEdit) {
         chiudiModalModifica();
+    }
+    if (event.target === modalDelete) {
+        chiudiModalArchivia();
     }
 };
 </script>

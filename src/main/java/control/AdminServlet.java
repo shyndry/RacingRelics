@@ -131,6 +131,23 @@ public class AdminServlet extends HttpServlet {
             session.setAttribute("adminError", "Impossibile completare l'operazione sul catalogo: dati non validi.");
         }
 
+        boolean isAjax = "XMLHttpRequest".equalsIgnoreCase(request.getHeader("X-Requested-With"));
+
+        if (isAjax) {
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+
+            String errorFlash = (String) session.getAttribute("adminError");
+            if (errorFlash != null) {
+                session.removeAttribute("adminError");
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write(String.format("{\"status\":\"error\", \"message\":\"%s\"}", errorFlash));
+            } else {
+                response.getWriter().write(String.format("{\"status\":\"success\", \"action\":\"%s\"}", action));
+            }
+            return;
+        }
+
         // PRG garantito al 100%: svuota i dati del payload POST evitando inserimenti
         // duplicati al refresh
         response.sendRedirect(request.getContextPath() + "/admin/dashboard");
