@@ -45,10 +45,9 @@
                                 <tr id="row-item-${item.prodotto.idProdotto}">
                                      <td>
                                          <div class="td-prodotto" style="display: flex; gap: 14px; align-items: center;">
-                                             <img src="${pageContext.request.contextPath}/images/prodotti/${not empty item.prodotto.immagine ? item.prodotto.immagine : 'default.svg'}" 
+                                             <img src="${pageContext.request.contextPath}/images/prodotti/${item.prodotto.immagine}" 
                                                   alt="<c:out value='${item.prodotto.nome}'/>" 
-                                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);"
-                                                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/prodotti/default.svg';">
+                                                  style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);">
                                              <div>
                                                  <h3><c:out value="${item.prodotto.nome}" /></h3>
                                                  <small><c:out value="${item.prodotto.scuderia}" /> - <c:out value="${item.prodotto.anno}" /></small>

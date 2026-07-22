@@ -91,10 +91,9 @@
                         <td>#<c:out value="${p.idProdotto}"/></td>
                         <td>
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <img src="${pageContext.request.contextPath}/images/prodotti/${not empty p.immagine ? p.immagine : 'default.svg'}" 
+                                <img src="${pageContext.request.contextPath}/images/prodotti/${p.immagine}" 
                                      alt="<c:out value='${p.nome}'/>" 
-                                     style="width: 42px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);"
-                                     onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/prodotti/default.svg';">
+                                     style="width: 42px; height: 42px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border);">
                                 <strong><c:out value="${p.nome}"/></strong>
                             </div>
                         </td>

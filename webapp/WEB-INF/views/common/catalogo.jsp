@@ -52,9 +52,7 @@
                     <c:forEach var="p" items="${prodotti}">
                         <div class="product-card">
                             <div class="product-image">
-                                <img src="${pageContext.request.contextPath}/images/prodotti/${not empty p.immagine ? p.immagine : 'default.svg'}" 
-                                     alt="<c:out value='${p.nome}'/>"
-                                     onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/prodotti/default.svg';">
+                                <img src="${pageContext.request.contextPath}/images/prodotti/${p.immagine}" alt="<c:out value='${p.nome}'/>">
                             </div>
                             <div class="product-info">
                                 <h3><c:out value="${p.nome}"/></h3>

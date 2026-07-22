@@ -179,13 +179,41 @@ public class AdminServlet extends HttpServlet {
                     String cleanName = submittedFileName.replaceAll("[^a-zA-Z0-9\\._-]", "_");
                     String fileName = System.currentTimeMillis() + "_" + cleanName;
 
+                    // 1. Salvataggio nella cartella di deployment del server
                     String uploadPath = request.getServletContext().getRealPath("/images/prodotti");
-                    File uploadDir = new File(uploadPath);
-                    if (!uploadDir.exists()) {
-                        uploadDir.mkdirs();
+                    if (uploadPath != null) {
+                        File uploadDir = new File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdirs();
+                        }
+                        filePart.write(uploadPath + File.separator + fileName);
                     }
 
-                    filePart.write(uploadPath + File.separator + fileName);
+                    // 2. Salvataggio nella cartella sorgente del progetto webapp/images/prodotti per persistenza permanente
+                    try {
+                        String realRoot = request.getServletContext().getRealPath("/");
+                        File srcFolder = null;
+                        if (realRoot != null) {
+                            File cur = new File(realRoot);
+                            while (cur != null) {
+                                File checkWebapp = new File(cur, "webapp/images/prodotti");
+                                if (checkWebapp.exists() || (cur.getName().equalsIgnoreCase("RacingRelics") && new File(cur, "webapp").exists())) {
+                                    srcFolder = new File(cur, "webapp/images/prodotti");
+                                    break;
+                                }
+                                cur = cur.getParentFile();
+                            }
+                        }
+                        if (srcFolder == null) {
+                            srcFolder = new File("C:/Users/andry/Desktop/RacingRelics/webapp/images/prodotti");
+                        }
+                        if (!srcFolder.exists()) {
+                            srcFolder.mkdirs();
+                        }
+                        filePart.write(srcFolder.getAbsolutePath() + File.separator + fileName);
+                    } catch (Exception e) {
+                        System.err.println("Impossibile salvare nella sorgente del progetto: " + e.getMessage());
+                    }
 
                     return fileName;
                 }

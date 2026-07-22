@@ -12,9 +12,7 @@
 
     <section class="prodotto-detail-container">
         <div class="prodotto-detail-image">
-            <img src="${pageContext.request.contextPath}/images/prodotti/${not empty prodotto.immagine ? prodotto.immagine : 'default.svg'}" 
-                 alt="<c:out value='${prodotto.nome}'/>"
-                 onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/images/prodotti/default.svg';">
+            <img src="${pageContext.request.contextPath}/images/prodotti/${prodotto.immagine}" alt="<c:out value='${prodotto.nome}'/>">
         </div>
 
         <div class="prodotto-detail-info">
