@@ -89,9 +89,12 @@ public class ProdottoDAOImpl implements ProdottoDAO {
     }
 
     @Override
-    public List<Prodotto> doRetrieveByFiltri(String scuderia, Integer anno, String pilota) throws SQLException {
+    public List<Prodotto> doRetrieveByFiltri(String queryText, String scuderia, Integer anno, String pilota) throws SQLException {
         StringBuilder query = new StringBuilder("SELECT * FROM Prodotto WHERE attivo = true");
 
+        if (queryText != null && !queryText.trim().isEmpty()) {
+            query.append(" AND (LOWER(nome) LIKE ? OR LOWER(descrizione) LIKE ? OR LOWER(scuderia) LIKE ? OR LOWER(pilota) LIKE ? OR LOWER(gran_premio) LIKE ?)");
+        }
         if (scuderia != null && !scuderia.trim().isEmpty()) {
             query.append(" AND scuderia = ?");
         }
@@ -107,6 +110,14 @@ public class ProdottoDAOImpl implements ProdottoDAO {
                 PreparedStatement ps = con.prepareStatement(query.toString())) {
 
             int paramIndex = 1;
+            if (queryText != null && !queryText.trim().isEmpty()) {
+                String term = "%" + queryText.trim().toLowerCase() + "%";
+                ps.setString(paramIndex++, term);
+                ps.setString(paramIndex++, term);
+                ps.setString(paramIndex++, term);
+                ps.setString(paramIndex++, term);
+                ps.setString(paramIndex++, term);
+            }
             if (scuderia != null && !scuderia.trim().isEmpty()) {
                 ps.setString(paramIndex++, scuderia);
             }

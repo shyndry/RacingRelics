@@ -127,6 +127,55 @@ hr { border: none; }
     color: var(--text);
 }
 
+.navbar-search-form {
+    display: flex;
+    align-items: center;
+    background: var(--bg-elevated, #1b1e24);
+    border: 1px solid var(--border, #333a42);
+    border-radius: var(--radius-md, 6px);
+    overflow: hidden;
+    margin: 0 20px;
+    max-width: 380px;
+    flex: 1;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.navbar-search-form:focus-within {
+    border-color: var(--brass, #c9a464);
+    box-shadow: 0 0 8px rgba(201, 164, 100, 0.25);
+}
+
+.navbar-search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text, #edeff2);
+    padding: 8px 14px;
+    font-size: 0.88rem;
+    font-family: var(--font-body);
+    width: 100%;
+}
+
+.navbar-search-input::placeholder {
+    color: var(--text-faint, #636973);
+}
+
+.navbar-search-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #9aa1ac);
+    padding: 8px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.navbar-search-btn:hover {
+    color: var(--brass, #c9a464);
+}
+
 .navbar-links {
     display: flex;
     list-style: none;

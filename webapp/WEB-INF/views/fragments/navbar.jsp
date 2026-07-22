@@ -7,6 +7,13 @@
             RACING <span class="text-red">RELICS</span>
         </a>
 
+        <form action="${pageContext.request.contextPath}/Catalogo" method="GET" class="navbar-search-form">
+            <input type="text" name="q" value="<c:out value='${paramQuery}'/>" placeholder="Cerca reperto, pilota, scuderia..." class="navbar-search-input">
+            <button type="submit" class="navbar-search-btn" title="Cerca">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+        </form>
+
         <ul class="navbar-links">
             <li>
                 <a href="${pageContext.request.contextPath}/Catalogo">Catalogo Reperti</a>

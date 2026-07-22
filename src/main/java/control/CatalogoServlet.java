@@ -23,6 +23,7 @@ public class CatalogoServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        String q = request.getParameter("q");
         String scuderia = request.getParameter("scuderia");
         String pilota = request.getParameter("pilota");
         String annoStr = request.getParameter("anno");
@@ -40,12 +41,14 @@ public class CatalogoServlet extends HttpServlet {
         try {
             List<Prodotto> prodotti;
 
-            if ((scuderia != null && !scuderia.trim().isEmpty()) || 
+            if ((q != null && !q.trim().isEmpty()) ||
+                (scuderia != null && !scuderia.trim().isEmpty()) || 
                 (pilota != null && !pilota.trim().isEmpty()) || 
                 anno != null) {
                 
-                prodotti = prodottoDAO.doRetrieveByFiltri(scuderia, anno, pilota);
+                prodotti = prodottoDAO.doRetrieveByFiltri(q, scuderia, anno, pilota);
                 
+                request.setAttribute("paramQuery", q);
                 request.setAttribute("paramScuderia", scuderia);
                 request.setAttribute("paramPilota", pilota);
                 request.setAttribute("paramAnno", anno);

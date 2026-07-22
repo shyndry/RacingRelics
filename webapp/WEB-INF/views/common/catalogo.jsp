@@ -10,6 +10,11 @@
     <section class="filter-section">
         <h2>Filtra la Griglia</h2>
         <form action="${pageContext.request.contextPath}/Catalogo" method="GET" class="filter-form">
+            <div class="form-group" style="flex: 2 1 200px;">
+                <label for="q">Ricerca Testuale</label>
+                <input type="text" id="q" name="q" value="<c:out value='${paramQuery}'/>" placeholder="Cerca nome, descrizione, GP...">
+            </div>
+
             <div class="form-group">
                 <label for="scuderia">Scuderia</label>
                 <input type="text" id="scuderia" name="scuderia" value="<c:out value='${paramScuderia}'/>" placeholder="Es. Ferrari, McLaren...">
