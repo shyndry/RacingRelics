@@ -40,11 +40,26 @@ public class AdminServlet extends HttpServlet {
             // L'admin usa il metodo ad hoc per vedere sia i cimeli attivi che quelli
             // archiviati
             List<Prodotto> prodotti = prodottoDAO.doRetrieveAllAdmin();
-            List<Ordine> ordini = ordineDAO.doRetrieveAll(null, null);
+
+            String dataInizio = request.getParameter("dataInizio");
+            String dataFine = request.getParameter("dataFine");
+            String idUtenteStr = request.getParameter("idUtente");
+            Integer idUtente = null;
+
+            if (idUtenteStr != null && !idUtenteStr.trim().isEmpty()) {
+                try {
+                    idUtente = Integer.parseInt(idUtenteStr);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+
+            List<Ordine> ordini = ordineDAO.doRetrieveAll(dataInizio, dataFine, idUtente);
 
             request.setAttribute("prodotti", prodotti);
-
             request.setAttribute("ordini", ordini);
+            request.setAttribute("filtroDataInizio", dataInizio);
+            request.setAttribute("filtroDataFine", dataFine);
+            request.setAttribute("filtroIdUtente", idUtenteStr);
 
             request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);
 
@@ -85,6 +100,30 @@ public class AdminServlet extends HttpServlet {
                 nuovoProdotto.setAttivo(true);
 
                 prodottoDAO.doSave(nuovoProdotto);
+            } else if ("update".equals(action)) {
+                String idStr = request.getParameter("idProdotto");
+                if (idStr != null) {
+                    int idProdotto = Integer.parseInt(idStr);
+                    Prodotto p = prodottoDAO.doRetrieveByKey(idProdotto);
+                    if (p != null) {
+                        p.setNome(request.getParameter("nome"));
+                        p.setDescrizione(request.getParameter("descrizione"));
+                        p.setPrezzo(Double.parseDouble(request.getParameter("prezzo")));
+                        p.setQuantitaDisponibile(Integer.parseInt(request.getParameter("quantita")));
+                        p.setImmagine(request.getParameter("immaginePath"));
+                        p.setScuderia(request.getParameter("scuderia"));
+                        p.setPilota(request.getParameter("pilota"));
+                        p.setAnno(Integer.parseInt(request.getParameter("anno")));
+                        p.setGranPremio(request.getParameter("granPremio"));
+
+                        String attivoStr = request.getParameter("attivo");
+                        if (attivoStr != null) {
+                            p.setAttivo(Boolean.parseBoolean(attivoStr));
+                        }
+
+                        prodottoDAO.doUpdate(p);
+                    }
+                }
             }
 
         } catch (NumberFormatException | SQLException e) {
